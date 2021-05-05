@@ -1,0 +1,97 @@
+---
+title: "Final Project"
+subtitle: "Data Science for Biologists, Spring 2021"
+author: "Holly Felker"
+output: 
+  html_document:
+    theme: spacelab
+    highlight: breezedark
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+# DON'T CHANGE THE NEXT LINE, except to add NEW options if you have any.
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = TRUE, include = TRUE)
+
+# Load all libraries you use HERE:
+
+library(tidyverse)
+```
+
+<br><br>
+
+## Introduction
+
+This dataset is a large compilation of all of the sightings of squirrels within Central Park in New York City over a two week period in 2018. It details their age, coloring, location, and behaviours of over 3000 squirrels. 
+
+I chose this dataset at first because I'd wanted to do something with animals while looking through the past Tidy Tuesdays, and all of the information about the squirrels seemed interesting. Then I actually read through the Squirrel Census website and honestly, it's really charming and cute, and made me want to look into their data that much more. Squirrels in general are adorable and smart (they can remember where they've buried a single nut in a large park for a couple years afterwards, and they will even mimic burying nuts to confuse other "thief" squirrels and birds), and it will be cool to look into a large population dataset of them and see how they generally act.
+
+<br>
+You can find the [NYC Squirrel Census data here](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-29). 
+
+(I would recommend also reading the actual [Squirrel Census](https://www.thesquirrelcensus.com/) webpage that the data is from because it's *wild*)
+
+<center>
+
+![*Picture taken from Squirrel Census website*](https://images.squarespace-cdn.com/content/v1/603eb468703ac05daa645759/1615241445862-14IGJV192HTVQU5L40N7/ke17ZwdGBToddI8pDm48kHUV6dDLfCQ4HBz_x2OKkK9Zw-zPPgdn4jUwVcJE1ZvWhcwhEtWJXoshNdA9f1qD7bNalm2hBiow6Ud3tcGmvvHIF2jj_e0-UIP_F6xVGbtXQQjOVi2ID8SIgmDZ4pM6MA/squirrel_haunches_web.png?format=300w)
+
+</center>
+
+```{r read-examine-data}
+
+squirrels <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-29/nyc_squirrels.csv")
+
+dplyr::glimpse(squirrels)
+
+```
+
+<br><br>
+
+## Question 1
+
+#### How many squirrels were found in trees compared to on the ground?
+
+### Methods
+
+### Answer
+
+Replace this text with your answer to your question.
+
+
+<br><br>
+
+## Question 2
+
+#### Is there a trend of squirrels behaving a certain way around humans depending on their age?
+
+### Methods
+
+### Answer
+
+Replace this text with your answer to your question.
+
+<br><br>
+
+## Question 3
+
+#### What percentage of squirrels have a cinnamon primary fur color?
+
+### Methods
+
+### Answer
+
+Replace this text with your answer to your question.
+
+
+<br><br>
+
+## Question 4
+
+#### Where were the most squirrels found over the 2 week period?
+
+### Methods
+
+### Answer
+
+Replace this text with your answer to your question.
