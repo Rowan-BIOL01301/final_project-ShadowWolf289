@@ -17,6 +17,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = TRUE, include = TRUE)
 # Load all libraries you use HERE:
 
 library(tidyverse)
+library(colorblindr)
 ```
 
 <br><br>
@@ -54,9 +55,35 @@ dplyr::glimpse(squirrels)
 
 ### Methods
 
+```{r question_1, fig.width = 6, fig.height = 4}
+
+squirrels %>%
+  select(unique_squirrel_id, location) %>% #looking for squirrels and their locations
+  distinct() %>% 
+  drop_na() %>% 
+  arrange(unique_squirrel_id) %>%
+  group_by(location) %>%
+  count(location) %>%
+  ungroup() %>%
+ggplot(aes(x = location, y = n)) +
+  geom_col(aes(fill = location), width = 0.5) +
+  geom_text(aes(label = n), nudge_y = 100) +
+  scale_fill_manual(values = c("deepskyblue", "forestgreen")) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  labs(x = "Squirrel Location", y = "Number of Squirrels") -> ground_plot
+
+
+#cvd_grid(ground_plot)    checked before finalising that the graph was colorblind-friendly and it looks good!
+
+print(ground_plot)
+
+```
+
+
 ### Answer
 
-Replace this text with your answer to your question.
+There were many more squirrels found on the ground than there were in the trees. Of the squirrels that had their locations noted, 2111 of them were first seen on the ground, while only 843 of them were seen in trees.
 
 
 <br><br>
