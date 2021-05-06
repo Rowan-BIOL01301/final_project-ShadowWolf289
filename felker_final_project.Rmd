@@ -59,24 +59,24 @@ dplyr::glimpse(squirrels)
 
 squirrels %>%
   select(unique_squirrel_id, location) %>% #looking for squirrels and their locations
-  distinct() %>% 
-  drop_na() %>% 
-  arrange(unique_squirrel_id) %>%
-  group_by(location) %>%
-  count(location) %>%
-  ungroup() %>%
-ggplot(aes(x = location, y = n)) +
-  geom_col(aes(fill = location), width = 0.5) +
-  geom_text(aes(label = n), nudge_y = 100) +
-  scale_fill_manual(values = c("deepskyblue", "forestgreen")) +
+  distinct() %>% #only getting distinct squirrels and IDs
+  drop_na() %>% #getting rid of all unknown locations
+  arrange(unique_squirrel_id) %>% #making it easier to look at while checking the tibble
+  group_by(location) %>% 
+  count(location) %>% #getting the location count
+  ungroup() %>% #must ungroup!
+ggplot(aes(x = location, y = n)) + #graph time!
+  geom_col(aes(fill = location), width = 0.5) + #making a bar graph with the numbers from the counts
+  geom_text(aes(label = n), nudge_y = 100) + #it took a bit to remember how to add and fix my labels
+  scale_fill_manual(values = c("deepskyblue", "forestgreen")) + #color coding for the different locations
   theme_classic() +
-  theme(legend.position = "none") +
+  theme(legend.position = "none") + #don't need the legend for this one
   labs(x = "Squirrel Location", y = "Number of Squirrels") -> ground_plot
 
 
 #cvd_grid(ground_plot)    checked before finalising that the graph was colorblind-friendly and it looks good!
 
-print(ground_plot)
+print(ground_plot) #printing the graph so it shows in the html
 
 ```
 
@@ -93,6 +93,21 @@ There were many more squirrels found on the ground than there were in the trees.
 #### Is there a trend of squirrels behaving a certain way around humans depending on their age?
 
 ### Methods
+
+```{r question_2}
+
+squirrels %>%
+  select(unique_squirrel_id, age, approaches, indifferent, runs_from) %>%
+  distinct() %>%
+  drop_na() %>%
+  group_by(age) %>%
+  filter(age != "?")
+
+
+
+
+```
+
 
 ### Answer
 
