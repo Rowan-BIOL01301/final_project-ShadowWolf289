@@ -101,7 +101,10 @@ squirrels %>%
   distinct() %>%
   drop_na() %>%
   group_by(age) %>%
-  filter(age != "?")
+  filter(age != "?") %>%
+  pivot_longer(cols = c("approaches", "indifferent", "runs_from"), names_to = "Behaviour", values_to = "value") %>%
+  filter(value != "FALSE") %>%
+  count(Behaviour)
 
 
 

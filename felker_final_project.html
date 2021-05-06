@@ -377,22 +377,20 @@ summary {
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age) <span class="sc">%&gt;%</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age <span class="sc">!=</span> <span class="st">&quot;?&quot;</span>)</span></code></pre></div>
-<pre><code>## # A tibble: 2,893 x 5
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age <span class="sc">!=</span> <span class="st">&quot;?&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">&quot;approaches&quot;</span>, <span class="st">&quot;indifferent&quot;</span>, <span class="st">&quot;runs_from&quot;</span>), <span class="at">names_to =</span> <span class="st">&quot;Behaviour&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(value <span class="sc">!=</span> <span class="st">&quot;FALSE&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Behaviour)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
 ## # Groups:   age [2]
-##    unique_squirrel_id age      approaches indifferent runs_from
-##    &lt;chr&gt;              &lt;chr&gt;    &lt;lgl&gt;      &lt;lgl&gt;       &lt;lgl&gt;    
-##  1 37E-PM-1006-03     Adult    FALSE      FALSE       TRUE     
-##  2 2E-AM-1010-03      Adult    FALSE      TRUE        FALSE    
-##  3 5D-PM-1018-05      Juvenile FALSE      FALSE       TRUE     
-##  4 33H-AM-1019-02     Juvenile FALSE      FALSE       FALSE    
-##  5 6G-PM-1020-02      Adult    FALSE      TRUE        FALSE    
-##  6 7B-AM-1008-09      Adult    FALSE      TRUE        FALSE    
-##  7 32E-PM-1017-14     Adult    FALSE      FALSE       TRUE     
-##  8 13E-AM-1017-05     Adult    FALSE      FALSE       FALSE    
-##  9 11H-AM-1010-03     Adult    FALSE      TRUE        FALSE    
-## 10 36H-AM-1010-02     Adult    FALSE      FALSE       FALSE    
-## # … with 2,883 more rows</code></pre>
+##   age      Behaviour       n
+##   &lt;chr&gt;    &lt;chr&gt;       &lt;int&gt;
+## 1 Adult    approaches    151
+## 2 Adult    indifferent  1266
+## 3 Adult    runs_from     570
+## 4 Juvenile approaches     22
+## 5 Juvenile indifferent   144
+## 6 Juvenile runs_from      80</code></pre>
 </div>
 <div id="answer-1" class="section level3">
 <h3>Answer</h3>
