@@ -94,19 +94,38 @@ There were many more squirrels found on the ground than there were in the trees.
 
 ### Methods
 
-```{r question_2}
+```{r question_2, fig.height = 4, fig.width = 7}
 
 squirrels %>%
-  select(unique_squirrel_id, age, approaches, indifferent, runs_from) %>%
+  select(unique_squirrel_id, age, approaches, indifferent, runs_from) %>% #getting the necessary columns
   distinct() %>%
-  drop_na() %>%
+  drop_na() %>% #same distinctness and getting rid of NA values
   group_by(age) %>%
-  filter(age != "?") %>%
-  pivot_longer(cols = c("approaches", "indifferent", "runs_from"), names_to = "Behaviour", values_to = "value") %>%
-  filter(value != "FALSE") %>%
-  count(Behaviour)
+  filter(age != "?") %>% #there were some where they didn't know the age of the squirrel, but I got rid of those
+  rename(c("Approaches Human" = approaches, 
+           "Indifferent towards Human" = indifferent, 
+           "Runs from Human" = runs_from)) %>% #renaming all of them so it looks better in the plot
+  pivot_longer(cols = c("Approaches Human", 
+                        "Indifferent towards Human", 
+                        "Runs from Human"), 
+               names_to = "behaviour", values_to = "value") %>% #pivoting it so everything is tidier
+  filter(value != "FALSE") %>% #only want the true values
+  count(behaviour) %>% #should have 6 rows for the 2 ages and 3 behaviours
+ggplot(aes(x = age, y = n)) +
+  geom_point(aes(fill = age), shape = 23, size = 4) + #getting ~fancy~ with the shapes
+  geom_segment(aes(xend = age, y = 0, yend = n)) + #made a lollipop plot for flavor
+  geom_text(aes(label = n), nudge_y = 100) + #hey I can actually see the values now
+  scale_fill_manual(values = c("deeppink", "gold")) +
+  facet_wrap(vars(behaviour)) + #separating them by the different behaviours
+  theme_classic() +
+  theme(legend.position = "none", 
+        strip.background = element_rect(fill = "skyblue")) + #making a nice background strip color
+  labs(x = "Squirrel Age", y = "Number of Squirrels") -> behaviour_plot
 
+ 
+#cvd_grid(behaviour_plot)   passes the colorblind test
 
+print(behaviour_plot)
 
 
 ```
@@ -114,7 +133,8 @@ squirrels %>%
 
 ### Answer
 
-Replace this text with your answer to your question.
+It doesn't really seem as though age plays much of a factor in squirrel behaviour. Although the vast majority of squirrels seen were adults, in both age groups, the highest behaviour count seen was that they were indifferent to people nearby. I had previously thought that possibly the juveniles, who wouldn't know any better, might approach the people more because they're curious; or that there would have been a larger number of adult squirrels who approached people, if they had learned that people would give them bits of food while walking around Central Park. But for each behaviour category, it doesn't seem as though age mattered, as, regardless of their age, the majority of all squirrels were indifferent towards humans, while the least amount of squirrels actually approached people.
+
 
 <br><br>
 
@@ -123,6 +143,21 @@ Replace this text with your answer to your question.
 #### What percentage of squirrels have a cinnamon primary fur color?
 
 ### Methods
+
+```{r, question_3}
+
+#mutate, add up everything then divide. Then multiply by 100
+
+
+squirrels %>%
+  select(unique_squirrel_id, primary_fur_color) %>%
+  distinct() %>%
+  drop_na()
+
+
+
+```
+
 
 ### Answer
 
@@ -136,6 +171,14 @@ Replace this text with your answer to your question.
 #### Where were the most squirrels found over the 2 week period?
 
 ### Methods
+
+```{r, question_4}
+
+#Get the list of all the hectares, then plot the top 10? (or top 5 or something)
+
+
+```
+
 
 ### Answer
 
