@@ -111,6 +111,7 @@ squirrels %>%
                names_to = "behaviour", values_to = "value") %>% #pivoting it so everything is tidier
   filter(value != "FALSE") %>% #only want the true values
   count(behaviour) %>% #should have 6 rows for the 2 ages and 3 behaviours
+  ungroup() %>% #almost forgot to ungroup!
 ggplot(aes(x = age, y = n)) +
   geom_point(aes(fill = age), shape = 23, size = 4) + #getting ~fancy~ with the shapes
   geom_segment(aes(xend = age, y = 0, yend = n)) + #made a lollipop plot for flavor
@@ -144,15 +145,30 @@ It doesn't really seem as though age plays much of a factor in squirrel behaviou
 
 ### Methods
 
-```{r, question_3}
-
-#mutate, add up everything then divide. Then multiply by 100
-
+```{r, question_3, fig.height = 4, fig.width = 6}
 
 squirrels %>%
   select(unique_squirrel_id, primary_fur_color) %>%
   distinct() %>%
-  drop_na()
+  drop_na() %>%
+  group_by(primary_fur_color) %>%
+  count() -> sqrrl
+
+sum(sqrrl$n) -> total
+
+sqrrl %>% 
+  mutate(percentage = n / sum(total) *100) %>%
+ggplot(aes(x = primary_fur_color, y = percentage)) +
+  geom_col(aes(fill = primary_fur_color), color = "black") +
+  geom_text(aes(label = round(percentage, digits = 2)), nudge_y = 5) +
+  scale_fill_manual(values = c("black", "chocolate", "lightgrey")) +
+  labs(x = "Squirrel Fur Color", y = "Percentage") +
+  theme_classic() +
+  theme(legend.position = "none") -> fur_plot
+  
+#cvd_grid(fur_plot)   color-blind friendly!
+  
+print(fur_plot)
 
 
 
