@@ -61,12 +61,12 @@ squirrels %>%
   select(unique_squirrel_id, location) %>% #looking for squirrels and their locations
   distinct() %>% #only getting distinct squirrels and IDs
   drop_na() %>% #getting rid of all unknown locations
-  arrange(unique_squirrel_id) %>% #making it easier to look at while checking the tibble
+  arrange(unique_squirrel_id) %>% #this is literally just for me as I'm slowly working my way through organising the tibble
   group_by(location) %>% 
   count(location) %>% #getting the location count
   ungroup() %>% #must ungroup!
 ggplot(aes(x = location, y = n)) + #graph time!
-  geom_col(aes(fill = location), width = 0.5) + #making a bar graph with the numbers from the counts
+  geom_col(aes(fill = location), width = 0.5, color = "black") + #So I did end up putting an outline around these too (you'll find out later what I mean)
   geom_text(aes(label = n), nudge_y = 100) + #it took a bit to remember how to add and fix my labels
   scale_fill_manual(values = c("deepskyblue", "forestgreen")) + #color coding for the different locations
   theme_classic() +
@@ -110,14 +110,14 @@ squirrels %>%
                         "Runs from Human"), 
                names_to = "behaviour", values_to = "value") %>% #pivoting it so everything is tidier
   filter(value != "FALSE") %>% #only want the true values
-  count(behaviour) %>% #should have 6 rows for the 2 ages and 3 behaviours
+  count(behaviour) %>% 
   ungroup() %>% #almost forgot to ungroup!
 ggplot(aes(x = behaviour, y = n)) +
   geom_point(aes(fill = behaviour), shape = 23, size = 4) + #getting ~fancy~ with the shapes
   geom_segment(aes(xend = behaviour, y = 0, yend = n)) + #made a lollipop plot for flavor
   geom_text(aes(label = n), nudge_x = 0.25) + #hey I can actually see the values now
   scale_fill_manual(values = c("deeppink", "gold", "forestgreen")) +
-  facet_wrap(vars(age), scales = "free") + #separating them by the different behaviours
+  facet_wrap(vars(age), scales = "free") + #separating them by the different ages
   theme_classic() +
   theme(legend.position = "none", 
         strip.background = element_rect(fill = "skyblue"),
@@ -133,9 +133,9 @@ print(behaviour_plot)
 ```
 
 
-### Answer (GO BACK AND CHANGE THE ANSWER AND CODE COMMENTS LATER SINCE WE CHANGED THE PLOT)
+### Answer
 
-It doesn't really seem as though age plays much of a factor in squirrel behaviour. Although the vast majority of squirrels seen were adults, in both age groups, the highest behaviour count seen was that they were indifferent to people nearby. I had previously thought that possibly the juveniles, who wouldn't know any better, might approach the people more because they're curious; or that there would have been a larger number of adult squirrels who approached people, if they had learned that people would give them bits of food while walking around Central Park. But for each behaviour category, it doesn't seem as though age mattered, as, regardless of their age, the majority of all squirrels were indifferent towards humans, while the least amount of squirrels actually approached people.
+It doesn't really seem as though age plays much of a factor in squirrel behaviour. Although far more adults than juveniles were recorded, in both age groups, the most common behaviour seen was that they were indifferent towards nearby people. I had previously thought that possibly the juveniles might have approached the humans more because they'd be naive and curious; or that there would have been a larger number of adult squirrels who approached people if they had learned that people would give them bits of food while walking around Central Park, but neither of these seem to be the case. There is no significant difference in the behaviour trends between adult and juvenile squirrels. The majority in both age groups were indifferent towards humans while the least common behaviour was that the squirrels actually approached them.
 
 
 <br><br>
@@ -149,23 +149,23 @@ It doesn't really seem as though age plays much of a factor in squirrel behaviou
 ```{r, question_3, fig.height = 4, fig.width = 6}
 
 squirrels %>%
-  select(unique_squirrel_id, primary_fur_color) %>%
+  select(unique_squirrel_id, primary_fur_color) %>% #only want to deal with primary fur colors, not the highlights
   distinct() %>%
-  drop_na() %>%
+  drop_na() %>% #the usual distinct, drop_na 
   group_by(primary_fur_color) %>%
   count() -> sqrrl
 
-sum(sqrrl$n) -> total
+sum(sqrrl$n) -> total #this is an annoying way to get percentages but it works I guess
 
 sqrrl %>% 
-  mutate(percentage = n / sum(total) *100) %>%
+  mutate(percentage = n / sum(total) *100) %>% #please let me know if there's some better way with an easy couple commands or if I'm stuck like this
 ggplot(aes(x = primary_fur_color, y = percentage)) +
-  geom_col(aes(fill = primary_fur_color), color = "black") +
-  geom_text(aes(label = round(percentage, digits = 2)), nudge_y = 5) +
-  scale_fill_manual(values = c("black", "chocolate", "lightgrey")) +
+  geom_col(aes(fill = primary_fur_color), color = "black") + #I should probably go back and also put an outline around the first bar graph so it looks neater
+  geom_text(aes(label = round(percentage, digits = 2)), nudge_y = 5) + #2 decimal points for everything
+  scale_fill_manual(values = c("black", "chocolate", "lightgrey")) + #close recreations of actual fur colors
   labs(x = "Squirrel Fur Color", y = "Percentage") +
-  theme_classic() +
-  theme(legend.position = "none") -> fur_plot
+  theme_classic() + #making it look pretty
+  theme(legend.position = "none") -> fur_plot 
   
 #cvd_grid(fur_plot)   color-blind friendly!
   
@@ -178,8 +178,8 @@ print(fur_plot)
 
 ### Answer
 
-13.23% of the squirrels seen in Central Park had a cinnamon primary fur color, though the majority of them were grey. There were also a large amount of squirrels with cinnamon "highlights" in addition to their other primary fur color, though the exact percentage of those is not answered with this graph.
-(Maybe if I have time at the end I'll also look at highlights too, but I might just leave it. That'd be a lot more complicated with using `select(contains("cinnamon"))` for the rows with multiple highlight colors)
+13.23% of the squirrels seen in Central Park had a cinnamon primary fur color, though the majority of them were grey. There were also a large amount of squirrels with cinnamon "highlights" in addition to their other primary fur color, though the exact percentage of those is not answered with this graph. <br><br>
+(Maybe if I have time at the end I'll also look at highlights too, but I might just leave it. That'd be a lot more complicated with using `select(contains("cinnamon"))` for the squirrels with multiple highlight colors)
 
 
 <br><br>
@@ -193,6 +193,9 @@ print(fur_plot)
 ```{r, question_4}
 
 #Get the list of all the hectares, then plot the top 10? (or top 5 or something)
+
+squirrels %>%
+  filter()
 
 
 ```
