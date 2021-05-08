@@ -121,7 +121,7 @@ ggplot(aes(x = behaviour, y = n)) +
   theme_classic() +
   theme(legend.position = "none", 
         strip.background = element_rect(fill = "skyblue"),
-        axis.text.x = element_text(angle = 30, vjust = 0.5)) + #making a nice background strip color
+        axis.text.x = element_text(angle = 30, vjust = 0.5)) + #making a nice background strip color and was able to actually angle the x-axis text so it's easier to read
   labs(x = "Squirrel Behaviour", y = "Number of Squirrels") -> behaviour_plot
 
  
@@ -135,7 +135,7 @@ print(behaviour_plot)
 
 ### Answer
 
-It doesn't really seem as though age plays much of a factor in squirrel behaviour. Although far more adults than juveniles were recorded, in both age groups, the most common behaviour seen was that they were indifferent towards nearby people. I had previously thought that possibly the juveniles might have approached the humans more because they'd be naive and curious; or that there would have been a larger number of adult squirrels who approached people if they had learned that people would give them bits of food while walking around Central Park, but neither of these seem to be the case. There is no significant difference in the behaviour trends between adult and juvenile squirrels. The majority in both age groups were indifferent towards humans while the least common behaviour was that the squirrels actually approached them.
+It doesn't really seem as though age plays much of a factor in squirrel behaviour. Although far more adults than juveniles were recorded, in both age groups, the most common behaviour seen was that they were indifferent towards nearby people (1266 adult squirrels and 144 juvenile squirrels). I had previously thought that possibly the juveniles might have approached the humans more because they'd be naive and curious; or that there would have been a larger number of adult squirrels who approached people if they had learned that people would give them bits of food while walking around Central Park, but neither of these seem to be the case. There is no significant difference in the behaviour trends between adult and juvenile squirrels. The majority in both age groups were indifferent towards humans while the least common behaviour was that the squirrels actually approached them.
 
 
 <br><br>
@@ -186,21 +186,149 @@ print(fur_plot)
 
 ## Question 4
 
-#### Where were the most squirrels found over the 2 week period?
+#### In what hectare of the park were the most squirrels found over the 2 week period?
 
 ### Methods
 
-```{r, question_4}
-
-#Get the list of all the hectares, then plot the top 10? (or top 5 or something)
+```{r, question_4, fig.height = 4, fig.width = 7}
 
 squirrels %>%
-  filter()
+  select(unique_squirrel_id, hectare) %>%
+  distinct() %>% #usual distinct and drop_na by now
+  drop_na() %>%
+  count(hectare) %>% #looking to see how many squirrels in a section
+  arrange(desc(n)) %>% #descending order to see the largest pop.
+  slice(n = 1:10) %>% #figured out how to get only the top 10!
+ggplot(aes(x = hectare, y = n)) +
+  geom_col(aes(x = fct_reorder(hectare, n), #reordering so it goes in ascending order
+               fill = fct_reorder(hectare, n)), color = "black") +
+  geom_text(aes(label = n, y = n+2)) +
+  labs(x = "Hectare", y = "Number of Squirrels Seen") +
+  theme_classic() +
+  theme(legend.position = "none", 
+        axis.text.x = element_text(size = 12)) -> hectare_plot #increasing bottom font size so it's easier to read
 
+#cvd_grid(hectare_plot)   it's not really that great as a color-blind friendly plot, but I don't want to have to find 10 distinct colors
+
+print(hectare_plot) #woo all of the plots are done!
 
 ```
 
 
 ### Answer
 
-Replace this text with your answer to your question.
+Over the two week period, there were 32 squirrels spotted in the 14D hectare, which (according to my best approximation looking at multiple maps) seems to be by the northeastern side of The Lake in Central Park, nicknamed "The Gill", which does make sense. It's close to the middle of the park which gives those squirrels in the area plenty of tree cover, which is similar to the next few hectares where the squirrels were most seen (32E and 14E), as they are in the same middle-ish stretch of the park, just at opposing ends of it.
+
+
+<br><br>
+
+## Bonus Because I Can't Stop Myself
+
+## Question 3.5
+
+#### What is the percentage of squirrels with cinnamon coloring anywhere in their fur?
+
+So way back in Question 3 I'd said this at the end:
+
+
+> "Maybe if I have time at the end I'll also look at highlights too."
+
+
+And since I have a little bit of time before turning in my final, I may as well try making the code for it, though I'm not sure if I'll be able to finish it before midnight.
+
+
+### Methods
+
+```{r question_35, fig.height = 4, fig.width = 6}
+
+squirrels %>%
+  select(unique_squirrel_id, combination_of_primary_and_highlight_color) %>%
+  distinct() %>%
+  filter(combination_of_primary_and_highlight_color != "+") %>% #got rid of the NA color combos
+  group_by(combination_of_primary_and_highlight_color) %>%
+  count() -> sq_color_totals #I have the color combos and their amounts  now
+
+sum(sq_color_totals$n) -> sq_sum #I don't remember why I did this
+
+#######################
+
+c("Black+", "Black+Cinnamon", "Black+Cinnamon, White", "Black+Gray", "Black+Gray, White", 
+  "Black+White", "Cinnamon+Black", "Cinnamon+Black, White", "Cinnamon+Gray, Black", "Gray+Black", 
+  "Gray+Black, Cinnamon", "Gray+Black, Cinnamon, White", "Gray+Black, White") -> blk #All squirrels with black fur combinations
+
+c("Black+Cinnamon", "Black+Cinnamon, White", "Cinnamon+", "Cinnamon+Black", "Cinnamon+Black, White", 
+  "Cinnamon+Gray", "Cinnamon+Gray, Black", "Cinnamon+Gray, White", "Cinnamon+White", "Gray+Black, Cinnamon", 
+  "Gray+Black, Cinnamon, White", "Gray+Cinnamon", "Gray+Cinnamon, White") -> cinna #squirrels with cinnamon fur
+
+c("Black+Gray", "Black+Gray, White", "Cinnamon+Gray", "Cinnamon+Gray, Black", "Cinnamon+Gray, White", 
+  "Gray+", "Gray+Black", "Gray+Black, Cinnamon", "Gray+Black, Cinnamon, White", "Gray+Black, White", 
+  "Gray+Cinnamon", "Gray+Cinnamon, White", "Gray+White") -> gry #grey fur
+
+c("Black+Cinnamon, White", "Black+Gray, White", "Black+White", "Cinnamon+Black, White", "Cinnamon+Gray, White", 
+  "Cinnamon+White", "Gray+Black, Cinnamon, White", "Gray+Black, White", "Gray+Cinnamon, White", "Gray+White") -> wht #white fur
+
+#######################
+
+sq_color_totals %>%
+  filter(combination_of_primary_and_highlight_color %in% blk) -> blk_sq #I have a list of all of the squirrels with some bit of black fur
+
+sum(blk_sq$n) -> blk_total #and the total amount of them
+
+################
+
+#I did the same as above for the rest of the fur colors
+sq_color_totals %>%
+  filter(combination_of_primary_and_highlight_color %in% cinna) -> cinna_sq
+
+sum(cinna_sq$n) -> cinna_total
+
+################
+
+sq_color_totals %>%
+  filter(combination_of_primary_and_highlight_color %in% gry) -> gry_sq
+
+sum(gry_sq$n) -> gry_total
+
+################
+
+sq_color_totals %>%
+  filter(combination_of_primary_and_highlight_color %in% wht) -> wht_sq
+
+sum(wht_sq$n) -> wht_total
+
+#######################
+
+squirrel_furs <- tribble(
+  ~fur_color, ~number, 
+#------------|---------
+  "Black", blk_total,
+  "Cinnamon", cinna_total,
+  "Grey", gry_total,
+  "White", wht_total
+) #made a tibble with the totals of all of the furs
+
+squirrel_furs %>%
+  mutate(percentage = number / sq_sum*100) %>% #I remember why I made sq_sum now!
+#Now I have a column with the percentage of the whole population with that fur color
+ggplot(aes(x = fur_color, y = percentage)) +
+  geom_col(aes(x = fct_reorder(fur_color, percentage), 
+               fill = fct_reorder(fur_color, percentage)), color = "black") + #reordered it so it goes in ascending order for the percentages
+  geom_text(aes(label = round(percentage, digits = 2)), nudge_y = 3) + #and only 2 decimals
+  scale_fill_manual(values = c("black", "white", "chocolate", "lightgrey")) + #using the same colors as before for each of the furs
+  labs(x = "Fur Color", y = "Percentage") +
+  theme_classic() +
+  theme(legend.position = "none") -> complicated_plot
+
+#cvd_grid(complicated_plot)   Still works!
+
+print(complicated_plot)
+
+```
+
+
+### Answer
+
+I did way too much for this. There was probably an easier way to do this, but I accomplished it within the time limit so I'm proud of myself anyway! Also yes, I know the percentages in the graph don't add up to 100%, but I was basing this off of a color showing up in the squirrel's fur in any capacity, so there will be overlap as a squirrel could have a grey primary fur color and a black fur highlight, and it'd show up in both grey and black. And some squirrels had all 4 colors in their fur.
+<br>
+
+Of the entire population of squirrels in Central Park, 49.48% of them had cinnamon fur in some part of their fur, be it their primary fur color or some highlights.
